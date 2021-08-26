@@ -8,7 +8,7 @@ MAX_GROUP_SIZE = 4
 
 def build_groups(args):    
     if len(args) != 2:
-        print("Add in a Student file then a TA file as command line arguements")
+        print("ERROR: Invalid number of arguements (Student file and TA file)")
         return
     men, women = split_students(args[0])
     total_students = len(men) + len(women)
@@ -17,6 +17,51 @@ def build_groups(args):
     distribute_men(men, groups)
     shuffle(groups)
     validate_groups(men + women, groups)
+    sections = setup_tas(groups, args[1])
+    print_html(sections)
+
+def print_html(sections):
+    group_number = 1
+    print("<table>")
+    for leader, section in sections.items():
+        print("<tr>")
+        print("<td>")
+        print(f"<h2>{leader}</h2>")
+        image_name = leader[0].lower() + leader.split(" ")[1].lower()+ '.jpg'
+        print(f'<img src="./../../images/{image_name}" />')
+        print("</td>")
+        for group in section:
+            print('<td>')
+            print(f'<h2>{group_number}</h2>')
+            group_number += 1
+            for student in group:
+                print(str(student) + "<br />")
+            print("</td>")
+    print("</table>")
+
+
+def setup_tas(groups, file_name):
+    tutors = []
+    sections = {}
+    with open(file_name, 'r') as file:
+        file.readline()
+        for line in file:
+            line = line.strip()
+            tutors.append(line)
+            sections[line] = []
+    group_number = 0
+    ta_index = 0
+    size = len(groups) // len(tutors)
+    while ta_index < len(tutors) and group_number < len(groups):
+        sections[tutors[ta_index]].append(groups[group_number])
+        group_number += 1
+        if len(sections[tutors[ta_index]]) >= size:
+            ta_index += 1
+
+
+    return sections
+            
+
 
 
 def shuffle(lst):
@@ -63,8 +108,6 @@ def distribute_men(students, groups):
 
         group_number += 1
 
-def shuffle_groups():
-    pass
 
 def validate_groups(students, groups):
     seen = set()
@@ -113,6 +156,7 @@ def split_students(file_name):
 
 def main(args):
     # Terrible code here. There is a bug that happens sometimes and I don't want to debug so sloppy fix it is
+    #build_groups(args)
     while True:
         try:
             build_groups(args)
