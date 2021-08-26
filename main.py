@@ -52,11 +52,10 @@ def setup_tas(groups, file_name):
     group_number = 0
     ta_index = 0
     size = len(groups) // len(tutors)
-    while ta_index < len(tutors) and group_number < len(groups):
+    while group_number < len(groups):
         sections[tutors[ta_index]].append(groups[group_number])
         group_number += 1
-        if len(sections[tutors[ta_index]]) >= size:
-            ta_index += 1
+        ta_index = (ta_index + 1) % len(tutors)
 
 
     return sections
