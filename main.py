@@ -35,7 +35,8 @@ def print_html(sections):
             print(f'<h2>{group_number}</h2>')
             group_number += 1
             for student in group:
-                print(str(student) + "<br />")
+                if student is not None:
+                    print(str(student) + "<br />")
             print("</td>")
     print("</table>")
 
